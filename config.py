@@ -6,7 +6,7 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 class DefaultConfig(object):
     TESTING = False
-    DEBUG = False
+    DEBUG = True
     WTF_CSRF_ENABLED = True
     SECRET_KEY = os.environ['SECRET_KEY']
     SCADS_URL = os.environ['SCADS_URL']
