@@ -1,0 +1,8 @@
+.DS_*
+.cache/
+.python-version
+.tox/
+__pycache__/
+*/__pycache__/
+config.py
+.coverage

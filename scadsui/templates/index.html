@@ -1,0 +1,32 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}SCADS{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" type="text/css" href="static/main.css"  media="screen" >
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    {% block container %}
+      <h1>SCADS</h1>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="bg-success" id="notice">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <a href="{{ url_for('handbag') }}">New Handbag profile</a>
+      {% endblock %}
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+{% endblock %}
+
+</html>

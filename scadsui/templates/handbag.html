@@ -1,0 +1,47 @@
+{% extends "index.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import 'macros.html' as macros %}
+
+{% block title %}SCADS: New Handbag workflow{% endblock %}
+
+{% block container %}
+  <h1>SCADS: New Handbag workflow profile</h1>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <p class="bg-danger" id="notice">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+  {% endwith %}
+  {% call macros.render_form(form, action_url=url_for('handbag'), action_text='Submit profile', class_='form-horizontal', btn_class='btn btn-primary') %}
+    {{ form.hidden_tag() }}
+    {{ wtf.form_errors(form, hiddens="only") }}
+    {% for field in form %}
+      {% if field.name == 'csrf_token' %}
+      {% elif field.name == 'metadata' %}
+        <div id='metadata' class='form-group'>
+          <label class='control-label'>Metadata fields</label>
+          {% for item in field %}
+            <div id='metadata-item' class='form-inline'>
+              {% for i in item %}
+                {% if 'csrf_token' in i.name %}
+                {% else %}
+                  {{ macros.render_field(i, placeholder=i.description) }}
+                {% endif %}
+              {% endfor %}
+              <button class="btn btn-default" type="submit" id="delete-md" onclick="delMD=True">Delete</button>
+            </div>
+          {% endfor %}
+        </div>
+      {% elif field.name == 'addMetadata' %}
+        <input class="btn btn-default" id="add-md" name="addMetadata" type="submit" value="Add metadata field" />
+      {% elif field.name == 'delMetadata' %}
+        <input class="btn btn-default" id="del-md" name="delMetadata" type="submit" value="Delete metadata field" />
+        <br />
+        <br />
+      {% else %}
+        {{ macros.render_field(field, placeholder=field.description) }}
+      {% endif %}
+    {% endfor %}
+  {% endcall %}
+{% endblock %}
