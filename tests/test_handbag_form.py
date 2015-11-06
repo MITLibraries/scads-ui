@@ -19,7 +19,7 @@ def test_add_metadata_field(testapp):
     assert 'metadata-item' in add
 
 
-def test_submit_valid_form(testapp, scads_url):
+def test_submit_valid_form(testapp):
     form = testapp.get('/handbag').form
     form['name'] = 'test'
     form['destinationName'] = 'test'

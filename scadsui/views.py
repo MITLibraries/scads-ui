@@ -2,17 +2,15 @@ from flask import flash, redirect, render_template, request
 from scadsui import app
 from scadsui.forms import HandbagWorkflowForm
 import json
+import os
 import requests
-import config as cfg
 from flask_bootstrap import Bootstrap
 
 
-app.config.from_object('config')
-app.config['WTF_CSRF_ENABLED'] = False
-app.config['SECRET_KEY'] = 'temp_key'
+app.config.from_object(os.environ['APP_SETTINGS'])
 bootstrap = Bootstrap(app)
-if app.config['TESTING'] == False:
-    SCADS_URL = cfg.PROD_SCADS_URL
+
+scads_url = app.config['SCADS_URL']
 
 
 @app.route('/')
@@ -22,6 +20,7 @@ def index():
 
 @app.route('/handbag', methods=['GET', 'POST'])
 def handbag():
+    print(scads_url)
     form = HandbagWorkflowForm()
 
     if form.addMetadata.data:
@@ -40,7 +39,7 @@ def handbag():
             metadata.insert(0, m)
         results = form.data
         profile = process_results(results, metadata)
-        post_to_scads(profile, SCADS_URL)
+        post_to_scads(profile, scads_url)
         flash('Profile "%s" created' % (form.name.data))
         return redirect('/')
     return render_template('handbag.html', form=form)
