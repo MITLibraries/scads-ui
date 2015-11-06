@@ -19,7 +19,7 @@ def test_add_metadata_field(testapp):
     assert 'metadata-item' in add
 
 
-def test_submit_valid_form(testapp):
+def test_submit_valid_form(app, testapp):
     form = testapp.get('/handbag').form
     form['name'] = 'test'
     form['destinationName'] = 'test'
@@ -28,5 +28,4 @@ def test_submit_valid_form(testapp):
     form['bagNameGenerator'] = 'test'
     form['packageFormat'] = 'zip'
     results = form.submit()
-    print(results.status_code)
     assert results.status_code == 302

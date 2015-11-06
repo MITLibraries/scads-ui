@@ -1,15 +1,13 @@
 from flask import flash, redirect, render_template, request
+from flask_bootstrap import Bootstrap
 from scadsui import app
 from scadsui.forms import HandbagWorkflowForm
+
 import json
-import os
 import requests
-from flask_bootstrap import Bootstrap
 
 
-app.config.from_object(os.environ['APP_SETTINGS'])
 bootstrap = Bootstrap(app)
-
 scads_url = app.config['SCADS_URL']
 
 
@@ -20,7 +18,6 @@ def index():
 
 @app.route('/handbag', methods=['GET', 'POST'])
 def handbag():
-    print(scads_url)
     form = HandbagWorkflowForm()
 
     if form.addMetadata.data:
