@@ -2,10 +2,10 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import 'macros.html' as macros %}
 
-{% block title %}SCADS: New Handbag workflow{% endblock %}
+{% block title %}SCADS: {{ status }} Handbag workflow{% endblock %}
 
 {% block container %}
-  <h1>SCADS: New Handbag workflow profile</h1>
+  <h1>SCADS: {{ status }} Handbag workflow profile</h1>
   {% with messages = get_flashed_messages() %}
     {% if messages %}
         {% for message in messages %}

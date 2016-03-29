@@ -13,13 +13,20 @@ scads_url = app.config['SCADS_URL']
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    workflows = []
+    i = 0
+    wf_list = requests.get(scads_url + 'workflows').json()
+    for wf_url in wf_list['workflows']:
+        wf = requests.get(wf_url).json()
+        workflows.append(wf)
+        workflows[i]['id'] = wf_url[44:]
+        i += 1
+    return render_template('index.html', url=scads_url, workflows=workflows)
 
 
 @app.route('/handbag', methods=['GET', 'POST'])
 def handbag():
     form = HandbagWorkflowForm()
-
     if form.addMetadata.data:
         form.metadata.append_entry()
     elif form.delMetadata.data:
@@ -36,10 +43,37 @@ def handbag():
             metadata.insert(0, m)
         results = form.data
         profile = process_results(results, metadata)
-        post_to_scads(profile, scads_url)
+        post_to_scads(profile, scads_url + 'workflows')
         flash('Profile "%s" created' % (form.name.data))
         return redirect('/')
-    return render_template('handbag.html', form=form)
+    return render_template('handbag.html', form=form, status="New")
+
+
+@app.route('/handbag/<wf_id>', methods=['GET', 'POST'])
+def handbag_edit_workflow(wf_id):
+    url = scads_url + 'workflow?id=' + wf_id
+    wf = requests.get(url).json()
+    form = HandbagWorkflowForm(**wf)
+    if form.addMetadata.data:
+        form.metadata.append_entry()
+    elif form.delMetadata.data:
+        if form.metadata.data:
+            form.metadata.pop_entry()
+        else:
+            flash('No metadata fields to delete')
+    elif request.form and form.validate():
+        metadata = []
+        while form.metadata.data:
+            m = form.metadata.pop_entry().data
+            if m['presetValue'] == '':
+                m.pop('presetValue')
+            metadata.insert(0, m)
+        results = form.data
+        profile = process_results(results, metadata)
+        post_to_scads(profile, scads_url + 'workflows')
+        flash('Profile "%s" updated' % (form.name.data))
+        return redirect('/')
+    return render_template('handbag.html', form=form, status="Edit")
 
 
 def process_results(results, md):
