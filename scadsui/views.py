@@ -43,7 +43,7 @@ def handbag():
             metadata.insert(0, m)
         results = form.data
         profile = process_results(results, metadata)
-        post_to_scads(profile, scads_url + 'workflows')
+        post_to_scads(profile, scads_url + 'workflows?agent=anon')
         flash('Profile "%s" created' % (form.name.data))
         return redirect('/')
     return render_template('handbag.html', form=form, status="New")
@@ -53,6 +53,7 @@ def handbag():
 def handbag_edit_workflow(wf_id):
     url = scads_url + 'workflow?id=' + wf_id
     wf = requests.get(url).json()
+    wf['maxBagSize'] = int(wf['maxBagSize'] / 1000000000)
     form = HandbagWorkflowForm(**wf)
     if form.addMetadata.data:
         form.metadata.append_entry()
@@ -78,6 +79,7 @@ def handbag_edit_workflow(wf_id):
 
 def process_results(results, md):
     r = results
+    r['maxBagSize'] = r['maxBagSize'] * 1000000000
     r.pop('addMetadata')
     r.pop('delMetadata')
     r['metadata'] = md

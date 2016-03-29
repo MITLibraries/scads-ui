@@ -7,7 +7,7 @@ class HandbagMetadataForm(Form):
     """ Sub form class for characterizing metadata fields.
     """
     name = StringField('Field name', [validators.InputRequired()],
-                       description='Ex: Bag-Creator')
+                       default='Bag-Creator')
     presetValue = StringField('Preset value', description='smithkr@mit.edu',
                               default=None)
     optional = BooleanField('Optional')
@@ -25,10 +25,14 @@ class HandbagWorkflowForm(Form):
                                   [validators.InputRequired()],
                                   description='Archives/Submission')
     destinationUrl = StringField('Destination URL',
-                                 [validators.InputRequired()],
-                                 description='Volumes/Archives/Submission')
+                                 [validators.InputRequired(),
+                                  validators.Regexp('file:///.*')],
+                                 default=('Mac ex: file:///Volumes/Archives/'
+                                          'Submission     Windows ex: file:///'
+                                          'Z:\Submission'))
     destinationEmail = StringField('Notification email recipient',
-                                   [validators.InputRequired()],
+                                   [validators.InputRequired(),
+                                    validators.Email()],
                                    description='smithkr@mit.edu')
     bagNameGenerator = StringField('Bag naming convention',
                                    [validators.InputRequired()],
@@ -40,10 +44,6 @@ class HandbagWorkflowForm(Form):
     checksumType = SelectField('Checksum type', choices=[('md5', 'md5'),
                                ('sha', 'sha')])
     maxBagSize = IntegerField('Maximum bag size (in GB)', default=10)
-    metadata = FieldList(FormField(HandbagMetadataForm), min_entries=0)
+    metadata = FieldList(FormField(HandbagMetadataForm), min_entries=1)
     addMetadata = SubmitField(description='Add metadata field')
     delMetadata = SubmitField(description='Delete metadata field')
-
-
-# if __name__ == "__main__":
-#     pass
